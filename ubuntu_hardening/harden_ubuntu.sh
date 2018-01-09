@@ -1,12 +1,25 @@
+#!/bin/bash
+### Ubuntu Hardening Script
 ### Script for initial Ubunutu Server setup and security hardening
 ### Tested on Ubuntu Server 16.04.3
+### WARNING: This will apply a secure sshd_config that forced public key auth,
+###          ensure you have your public keys installed before running this script.
+
+### Setup colors
+NORM='\033[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+
+### Welcome message
+echo -e "${GREEN}Starting Ubuntu hardening script...${NORM}"
 
 ### Update & Upgrade
-echo "Updating and upgrading..."
+echo -e "${GREEN}Updating and upgrading packages...${NORM}"
 sudo apt-get -y update && sudo apt-get -y upgrade
 
 ### Setup UFW and allow SSH & HTTP/HTTPS
-echo "Installing UFW..."
+echo -e "${GREEN}Installing UFW and allowing protocols through...#{NORM}"
 sudo apt-get -y install ufw
 sudo ufw allow ssh
 sudo ufw allow http
@@ -17,16 +30,18 @@ sudo ufw status verbose
 ### Secure shared memory if not already done
 if grep -q "tmpfs     /run/shm     tmpfs     defaults,noexec,nosuid     0     0" /etc/fstab
 then
-    echo "Shared memory already secured..."
+    echo -e "#{YELLOW}Shared memory already secured...${NORM}"
 else
-    echo "Securing shared memory in /etc/fstab..."
+    echo -e "${GREEN}Securing shared memory in /etc/fstab...${NORM}"
     sudo sh -c "echo 'tmpfs     /run/shm     tmpfs     defaults,noexec,nosuid     0     0' >> /etc/fstab"
 fi
 
 ### Backup /etc/sysctl.conf file
+echo -e "${GREEN}Backing up /etc/sysctl.conf -> /etc/sysctl.conf.bak${NORM}"
 sudo cp -f /etc/sysctl.conf /etc/sysctl.conf.bak
 
 ### Harden /etc/sysctl.conf - dump this at the end
+echo -e "${GREEN}Hardening /etc/sysctl.conf${NORM}"
 sudo sh -c "echo '
 # IP Spoofing protection
 net.ipv4.conf.all.rp_filter = 1
@@ -65,26 +80,41 @@ net.ipv6.conf.default.accept_redirects = 0
 net.ipv4.icmp_echo_ignore_all = 1' >> /etc/sysctl.conf"
 
 ### Backup /etc/host.conf file
+echo -e "${GREEN}Backing up /etc/host.conf -> /etc/host.conf.bak${NORM}"
 sudo cp -f /etc/host.conf /etc/host.conf.bak
 
 ### Prevent IP spoofing in /etc/host.conf - overwrite file with this
+echo -e "${GREEN}Hardening /etc/host.conf${NORM}"
 sudo sh -c "echo 'order bind,hosts
 multi on
 nospoof on' > /etc/host.conf"
 
 ### Install RKHunter and CHKRootKit
+echo -e "${GREEN}Installing RKHunter & CHKRootKit${NORM}"
 sudo apt-get -y install rkhunter chkrootkit
 
 ### Run CHKRootKit
+echo -e "${GREEN}Running chkrootkit...${NORM}"
 sudo chkrootkit
 
 ### Run RKHunter
+echo -e "${GREEN}Running rkhunter...${NORM}"
 sudo rkhunter --update ### Update definitions
 sudo rkhunter --propupd ### Update entire properties file
 sudo rkhunter --check --sk ### Run all checks and skip keypress requirement
 
 ### Backup /etc/ssh/sshd_config
+echo -e "${GREEN}Backing up SSH configuration...${NORM}"
 sudo cp -y /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 
+### Warn about public keys before applying ssh config and give some delay to bail
+echo -e "${RED}WARNING: This sshd_config file will restric access to public keys only! Ensure your public keys are on this box before proceeding!${NORM}"
+sleep 10
+
 ### Apply new sshd_config
+echo -e "${GREEN}Applying new SSH configuration...${NORM}"
 sudo cp -y sshd_config /etc/ssh/sshd_config
+
+## Restart ssh service
+echo -e "${GREEN}Restarting SSH service...${NORM}"
+sudo service ssh restart
