@@ -38,6 +38,8 @@ echo -e "${GREEN}Copying /etc/fail2ban/fail2ban.conf -> /etc/fail2ban/fail2ban.l
 sudo cp -f /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local.bak
 echo -e "${GREEN}Copying fail2ban.local -> /etc/fail2ban/fail2ban.local${NORM}"
 sudo cp -f fail2ban.local /etc/fail2ban/fail2ban.local
+echo -e "${GREEN}Copying nginx-noscript.conf -> /etc/fail2ban/filter.d/nginx-noscript.conf${NORM}"
+sudo cp -f nginx-noscript.conf /etc/fail2ban/filter.d/nginx-noscript.conf
 
 
 ### Secure shared memory if not already done
