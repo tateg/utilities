@@ -25,7 +25,15 @@ sudo apt-get -y install letsencrypt
 letsencrypt certonly --webroot -w /var/www/site.com -d site.com -d www.site.com
 
 ### Generate dhparam
-openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
+sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
+
+### Copy nginx.conf
+
+### Copy site
+
 
 ### Restart nginx
 sudo service nginx restart
+
+### Finished
+echo -e "${GREEN}Nginx configuration script complete!${NORM}"
