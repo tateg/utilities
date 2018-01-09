@@ -86,7 +86,6 @@ sudo cp -f /etc/host.conf /etc/host.conf.bak
 ### Prevent IP spoofing in /etc/host.conf - overwrite file with this
 echo -e "${GREEN}Hardening /etc/host.conf${NORM}"
 sudo sh -c "echo 'order bind,hosts
-multi on
 nospoof on' > /etc/host.conf"
 
 ### Install RKHunter and CHKRootKit
