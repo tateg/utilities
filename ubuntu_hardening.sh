@@ -79,7 +79,7 @@ sudo apt-get -y install rkhunter chkrootkit
 sudo chkrootkit
 
 ### Run RKHunter
-sudo rkhunter --update
-sudo rkhunter --propupd
-sudo rkhunter --check
+sudo rkhunter --update ### Update definitions
+sudo rkhunter --propupd ### Update entire properties file
+sudo rkhunter --check --sk ### Run all checks and skip keypress requirement
 
