@@ -129,6 +129,13 @@ sudo sh -c "echo '
 |**********************************|
 ' > /etc/issue.net"
 
-## Restart ssh service
+### Restart ssh service
 echo -e "${GREEN}Restarting SSH service...${NORM}"
 sudo service ssh restart
+
+### Complete
+echo -e "${GREEN}Ubuntu hardening script completed!${NORM}"
+
+### Housekeeping
+### Don't forget to adjust any host specific parameters following the execution of this script
+### Example: edit /etc/ssh/sshd_config to add AllowUsers user@sub.net.work.*
