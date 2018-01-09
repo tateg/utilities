@@ -105,7 +105,7 @@ sudo rkhunter --check --sk ### Run all checks and skip keypress requirement
 
 ### Backup /etc/ssh/sshd_config
 echo -e "${GREEN}Backing up SSH configuration...${NORM}"
-sudo cp -y /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+sudo cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 
 ### Warn about public keys before applying ssh config and give some delay to bail
 echo -e "${RED}WARNING: This sshd_config file will restric access to public keys only! Ensure your public keys are on this box before proceeding!${NORM}"
@@ -113,7 +113,7 @@ sleep 10
 
 ### Apply new sshd_config
 echo -e "${GREEN}Applying new SSH configuration...${NORM}"
-sudo cp -y sshd_config /etc/ssh/sshd_config
+sudo cp -f sshd_config /etc/ssh/sshd_config
 
 ## Restart ssh service
 echo -e "${GREEN}Restarting SSH service...${NORM}"
