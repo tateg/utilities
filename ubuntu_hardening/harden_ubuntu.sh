@@ -19,7 +19,7 @@ echo -e "${GREEN}Updating and upgrading packages...${NORM}"
 sudo apt-get -y update && sudo apt-get -y upgrade
 
 ### Setup UFW and allow SSH & HTTP/HTTPS
-echo -e "${GREEN}Installing UFW and allowing protocols through...#{NORM}"
+echo -e "${GREEN}Installing UFW and allowing protocols through...${NORM}"
 sudo apt-get -y install ufw
 sudo ufw allow ssh
 sudo ufw allow http
