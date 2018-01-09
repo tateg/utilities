@@ -115,6 +115,20 @@ sleep 10
 echo -e "${GREEN}Applying new SSH configuration...${NORM}"
 sudo cp -f sshd_config /etc/ssh/sshd_config
 
+### Backup /etc/issue.net
+echo -e "${GREEN}Backing up /etc/issue.net -> /etc/issue.net.bak${NORM}"
+sudo cp -f /etc/issue.net /etc/issue.net.bak
+
+### Apply new banner
+echo -e "${GREEN}Applying new login banner...${NORM}"
+sudo sh -c "echo '
+|**********************************|
+|* UNAUTHORIZED ACCESS PROHIBITED *|
+|**********************************|
+|****** ALL ACTIVITY LOGGED *******|
+|**********************************|
+' > /etc/issue.net"
+
 ## Restart ssh service
 echo -e "${GREEN}Restarting SSH service...${NORM}"
 sudo service ssh restart
