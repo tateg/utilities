@@ -1,0 +1,119 @@
+# Local Jail.conf File
+# Comments: use '#' for comment lines and ';' (following a space) for inline comments
+
+[INCLUDES]
+before = paths-debian.conf
+
+[DEFAULT]
+# Add any IP's to ignore below, all on one line with spaces 
+ignoreip = 127.0.0.1/8 172.16.0.0/16
+ignorecommand =
+
+# Ban and Fine Time in Seconds
+bantime  = 600
+findtime  = 600
+
+# Maximum attempts before banning intruder
+maxretry = 6
+
+backend = auto
+usedns = warn
+logencoding = auto
+
+# Default Action All Filters Disabled
+enabled = false
+
+# Default Filter Name Uses Jail Name
+filter = %(__name__)s
+
+# Mail Settings
+destemail = me@mydomain.com
+sender = fail2ban@mydomain.com
+sendername = Fail2Ban
+mta = mail
+
+# Firewall Defaults
+protocol = tcp
+chain = INPUT
+port = 0:65535
+banaction = iptables-multiport
+
+# Our Banning Action
+# ban & send an e-mail with whois report and relevant log lines
+# to the destemail.
+action_mwl = %(banaction)s[name=%(__name__)s, bantime="%(bantime)s", port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+             %(mta)s-whois-lines[name=%(__name__)s, sender="%(sender)s", dest="%(destemail)s", logpath=%(logpath)s, chain="%(chain)s"]
+
+# Choose default action.
+action = %(action_mwl)s
+
+# NOTE: Other actions removed. Review jail.conf file for all 
+# other available options like action_ action_mw action_xarf
+# action_cf_mwl action_blocklist_de and action_badips
+# I find action_mwl to be more than adequate for my needs and 
+# the others especially xarf, blocklist_de and badips should 
+# be used with utmost care and only when you know what you are doing
+
+#
+# JAILS
+#
+
+#
+# SSH servers
+#
+
+[sshd]
+enabled = true
+port    = ssh
+filter = sshd
+logpath  = /var/log/auth.*
+maxretry = 6
+
+[sshd-ddos]
+enabled = true
+port    = ssh
+filter = sshd-ddos
+logpath  = /var/log/auth.*
+maxretry = 6
+
+#
+# HTTP servers
+#
+
+[nginx-http-auth]
+enabled = true
+port    = http,https
+filter = nginx-http-auth
+logpath = /var/log/nginx/*access.log*
+maxretry = 6
+
+[nginx-botsearch]
+enabled = true
+port     = http,https
+filter = nginx-botsearch
+logpath  = /var/log/nginx/*access.log*
+maxretry = 6
+
+[nginx-noscript]
+enabled = true
+port     = http,https
+filter = nginx-noscript
+logpath  = /var/log/nginx/*access.log*
+maxretry = 6
+
+
+# Jail for more extended banning of persistent abusers
+# !!! WARNINGS !!!
+# 1. Make sure that your loglevel specified in fail2ban.conf/.local
+#    is not at DEBUG level -- which might then cause fail2ban to fall into
+#    an infinite loop constantly feeding itself with non-informative lines
+# 2. Increase dbpurgeage defined in fail2ban.conf to e.g. 648000 (7.5 days)
+#    to maintain entries for failed logins for sufficient amount of time
+
+[blacklist]
+enabled = true
+logpath  = /var/log/fail2ban.*
+banaction = blacklist
+bantime  = 31536000   ; 1 year
+findtime = 31536000   ; 1 year
+maxretry = 10
