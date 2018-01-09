@@ -1,0 +1,28 @@
+server {
+  
+  server_name name.com;
+  
+  # Tell Nginx/Passenger where application lives
+  root /var/www/name.com/public;
+  
+  # Enable Passenger
+  passenger_enabled on;
+  
+  # Specify rails_env
+  rails_env development;
+  
+  listen 80;
+
+  # SSL Configuration
+  listen 443 ssl;
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+  ssl_prefer_server_ciphers on;
+  ssl_dhparam /etc/nginx/ssl/dhparam.pem;
+  ssl_certificate /etc/nginx/ssl/nginx.crt;
+  ssl_certificate_key /etc/nginx/ssl/nginx.key;
+  
+  # Security headers
+  add_header X-XSS-Protection "1; mode=block";
+  
+}
