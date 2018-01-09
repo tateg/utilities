@@ -83,3 +83,8 @@ sudo rkhunter --update ### Update definitions
 sudo rkhunter --propupd ### Update entire properties file
 sudo rkhunter --check --sk ### Run all checks and skip keypress requirement
 
+### Backup /etc/ssh/sshd_config
+sudo cp -y /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+
+### Apply new sshd_config
+sudo cp -y sshd_config /etc/ssh/sshd_config
