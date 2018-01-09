@@ -27,6 +27,19 @@ sudo ufw allow https
 sudo ufw --force enable
 sudo ufw status verbose
 
+### Install fail2ban
+echo -e "${GREEN}Installing fail2ban...${NORM}"
+sudo apt-get -y install fail2ban
+echo -e "${GREEN}Copying /etc/fail2ban/jail.conf -> /etc/fail2ban/jail.local.bak${NORM}"
+sudo cp -f /etc/fail2ban/jail.conf /etc/fail2ban/jail.local.bak
+echo -e "${GREEN}Copying jail.local -> /etc/fail2ban/jail.local${NORM}"
+sudo cp -f jail.local /etc/fail2ban/jail.local
+echo -e "${GREEN}Copying /etc/fail2ban/fail2ban.conf -> /etc/fail2ban/fail2ban.local.bak${NORM}"
+sudo cp -f /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local.bak
+echo -e "${GREEN}Copying fail2ban.local -> /etc/fail2ban/fail2ban.local${NORM}"
+sudo cp -f fail2ban.local /etc/fail2ban/fail2ban.local
+
+
 ### Secure shared memory if not already done
 if grep -q "tmpfs     /run/shm     tmpfs     defaults,noexec,nosuid     0     0" /etc/fstab
 then
