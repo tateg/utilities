@@ -22,7 +22,7 @@ echo -e "${GREEN}Backing up nginx.conf...${NORM}"
 sudo cp -f /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
 
 ### Stop nginx
-echo -e "${GREEN}Stopping nginx...{$NORM}"
+echo -e "${GREEN}Stopping nginx...${NORM}"
 sudo service nginx stop
 
 ### Copy nginx.conf
