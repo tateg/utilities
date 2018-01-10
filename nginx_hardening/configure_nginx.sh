@@ -17,22 +17,31 @@ echo -e "${GREEN}Starting nginx configuration script...${NORM}"
 echo -e "${GREEN}Updating and upgrading packages...${NORM}"
 sudo apt-get -y update && sudo apt-get -y upgrade
 
+### Copy nginx.conf
+echo -e "${GREEN}Copying nginx.conf -> /etc/nginx/nginx.conf${NORM}"
+sudo cp -f nginx.conf /etc/nginx/nginx.conf
+
+### Copy site
+echo -e "${GREEN}Copying site_example -> /etc/nginx/sites-available/site_example${NORM}"
+sudo cp -f site_example /etc/nginx/sites-available/site_example
+
 ### Install Let's Encrypt
+echo -e "${GREEN}Installing Let's Encrypt${NORM}"
 sudo apt-get -y install letsencrypt
 
 ### Generate SSL certificate using Let's Encrypt
 ### Change "site.com" to your actual domain
+### Ensure that nginx is already up and running at the correct domain before generating
+### This process relies on DNS resolution
+echo -e "${GREEN}Generating Let's Encrypt certificate...${NORM}"
 letsencrypt certonly --webroot -w /var/www/site.com -d site.com -d www.site.com
 
 ### Generate dhparam
+echo -e "${GREEN}Generating dhparam.pem...${NORM}"
 sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 
-### Copy nginx.conf
-
-### Copy site
-
-
 ### Restart nginx
+echo -e "${GREEN}Restarting nginx service...${NORM}"
 sudo service nginx restart
 
 ### Finished
