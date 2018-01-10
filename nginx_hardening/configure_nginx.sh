@@ -21,9 +21,13 @@ sudo apt-get -y update && sudo apt-get -y upgrade
 echo -e "${GREEN}Copying nginx.conf -> /etc/nginx/nginx.conf${NORM}"
 sudo cp -f nginx.conf /etc/nginx/nginx.conf
 
-### Copy site
-echo -e "${GREEN}Copying site_example -> /etc/nginx/sites-available/site_example${NORM}"
-sudo cp -f site_example /etc/nginx/sites-available/site_example
+### Prompt for name of site
+echo -e "${GREEN}Please enter domain name for nginx site (ex: domain.com): ${NORM}"
+read my_domain
+
+### Copy site, pre-SSL
+echo -e "${GREEN}Copying site_example_pre_ssl -> /etc/nginx/sites-available/$my_domain${NORM}"
+sudo cp -f site_example_pre_ssl /etc/nginx/sites-available/$my_domain
 
 ### Install Let's Encrypt
 echo -e "${GREEN}Installing Let's Encrypt${NORM}"
@@ -39,6 +43,10 @@ letsencrypt certonly --webroot -w /var/www/site.com -d site.com -d www.site.com
 ### Generate dhparam
 echo -e "${GREEN}Generating dhparam.pem...${NORM}"
 sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
+
+### Copy site, post-SSL
+echo -e "${GREEN}Copying site_example_post_ssl -> /etc/nginx/sites-available/$my_domain${NORM}"
+sudo cp -f site_example_post_ssl /etc/nginx/sites-available/$my_domain
 
 ### Restart nginx
 echo -e "${GREEN}Restarting nginx service...${NORM}"
