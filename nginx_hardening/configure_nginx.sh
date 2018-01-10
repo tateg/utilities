@@ -89,6 +89,10 @@ echo -e "${GREEN}Copying site_example_post_ssl -> /etc/nginx/sites-available/$my
 sudo cp -f site_example_post_ssl /etc/nginx/sites-available/$my_domain
 sudo sed -i -e "s/my_site.com/$my_domain/g" /etc/nginx/sites-available/$my_domain
 
+### Cleanup temp webroot
+echo -e "${GREEN}Cleaning up temporary webroot directory...${NORM}"
+sudo rm -rf /var/www/$my_domain.cert.temp
+
 ### Start nginx
 echo -e "${GREEN}Starting nginx...${NORM}"
 sudo service nginx start
