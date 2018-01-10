@@ -42,9 +42,10 @@ echo -e "${GREEN}Please enter domain name for nginx site (ex: domain.com): ${NOR
 read my_domain
 echo -e "${GREEN}Using: $my_domain${NORM}"
 
-### Copy site, pre-SSL
+### Copy site and replace domain in destination, pre-SSL
 echo -e "${GREEN}Copying site_example_pre_ssl -> /etc/nginx/sites-available/$my_domain${NORM}"
 sudo cp -f site_example_pre_ssl /etc/nginx/sites-available/$my_domain
+sudo sed -i -e "s/my_site.com/$my_domain/g" /etc/nginx/sites-available/$my_domain
 
 ### Apply symlink to enable site
 echo -e "${GREEN}Enabling $my_domain with symlink in /etc/nginx/sites-available${NORM}"
@@ -76,9 +77,10 @@ sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 echo -e "${GREEN}Stopping nginx...${NORM}"
 sudo service nginx stop
 
-### Copy site, post-SSL
+### Copy site and replace domain in destination, post-SSL
 echo -e "${GREEN}Copying site_example_post_ssl -> /etc/nginx/sites-available/$my_domain${NORM}"
 sudo cp -f site_example_post_ssl /etc/nginx/sites-available/$my_domain
+sudo sed -i -e "s/my_site.com/$my_domain/g" /etc/nginx/sites-available/$my_domain
 
 ### Start nginx
 echo -e "${GREEN}Starting nginx...${NORM}"
