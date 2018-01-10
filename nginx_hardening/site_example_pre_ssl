@@ -1,0 +1,12 @@
+server {
+
+  # Basic server configuration to use during ssl cert generation
+
+  listen 80;
+  listen [::]:80;
+  
+  server_name my_site.com www.my_site.com;
+  
+  root /var/www/my_site.com.cert.temp
+
+}
