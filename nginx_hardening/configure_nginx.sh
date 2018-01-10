@@ -21,13 +21,26 @@ sudo apt-get -y update && sudo apt-get -y upgrade
 echo -e "${GREEN}Backing up nginx.conf...${NORM}"
 sudo cp -f /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
 
+### Stop nginx
+echo -e "${GREEN}Stopping nginx...{$NORM}"
+sudo service nginx stop
+
 ### Copy nginx.conf
 echo -e "${GREEN}Copying nginx.conf -> /etc/nginx/nginx.conf${NORM}"
 sudo cp -f nginx.conf /etc/nginx/nginx.conf
 
+### Remove default symlink if it is there
+if [ ! -h /etc/nginx/sites-enabled/default ]; then
+  echo -e "${GREEN}Default nginx site not enabled...${NORM}"
+else
+  echo -e "${RED}Disabling default nginx site...${NORM}"
+  sudo rm /etc/nginx/sites-enabled/default
+fi
+
 ### Prompt for name of site
 echo -e "${GREEN}Please enter domain name for nginx site (ex: domain.com): ${NORM}"
 read my_domain
+echo -e "${GREEN}Using: $my_domain${NORM}"
 
 ### Copy site, pre-SSL
 echo -e "${GREEN}Copying site_example_pre_ssl -> /etc/nginx/sites-available/$my_domain${NORM}"
@@ -37,28 +50,39 @@ sudo cp -f site_example_pre_ssl /etc/nginx/sites-available/$my_domain
 echo -e "${GREEN}Enabling $my_domain with symlink in /etc/nginx/sites-available${NORM}"
 sudo ln -s /etc/nginx/sites-available/$my_domain /etc/nginx/sites-enabled/$my_domain
 
+### Setup temporary webroot directory for cert generation and make index
+sudo mkdir -p /var/www/$my_domain.cert.temp
+sudo sh -c "echo '<h1>temp</h1>' > /var/www/$my_domain.cert.temp/index.html"
+
+### Restart nginx
+echo -e "${GREEN}Starting nginx...${NORM}"
+sudo service nginx start
+
 ### Install Let's Encrypt
 echo -e "${GREEN}Installing Let's Encrypt${NORM}"
 sudo apt-get -y install letsencrypt
 
 ### Generate SSL certificate using Let's Encrypt
-### Change "site.com" to your actual domain
-### Ensure that nginx is already up and running at the correct domain before generating
-### This process relies on DNS resolution
+### This will generate a temporary webroot that matches the one in the pre_ssl config
+### This process relies on DNS resolution so your domain must actually point to this nginx server
 echo -e "${GREEN}Generating Let's Encrypt certificate...${NORM}"
-letsencrypt certonly --webroot -w /var/www/site.com -d site.com -d www.site.com
+letsencrypt certonly --webroot -w /var/www/$my_domain.cert.temp -d $my_domain -d www.$my_domain
 
 ### Generate dhparam
 echo -e "${GREEN}Generating dhparam.pem...${NORM}"
 sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 
+### Stop nginx
+echo -e "${GREEN}Stopping nginx...${NORM}"
+sudo service nginx stop
+
 ### Copy site, post-SSL
 echo -e "${GREEN}Copying site_example_post_ssl -> /etc/nginx/sites-available/$my_domain${NORM}"
 sudo cp -f site_example_post_ssl /etc/nginx/sites-available/$my_domain
 
-### Restart nginx
-echo -e "${GREEN}Restarting nginx service...${NORM}"
-sudo service nginx restart
+### Start nginx
+echo -e "${GREEN}Starting nginx...${NORM}"
+sudo service nginx start
 
 ### Finished
 echo -e "${GREEN}Nginx configuration script complete!${NORM}"
