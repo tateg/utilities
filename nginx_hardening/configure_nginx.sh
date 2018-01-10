@@ -66,19 +66,23 @@ sudo apt-get -y install letsencrypt
 ### Generate SSL certificate using Let's Encrypt
 ### This will generate a temporary webroot that matches the one in the pre_ssl config
 ### This process relies on DNS resolution so your domain must actually point to this nginx server
+### NOTE: If you have ever had a cert generated and used for this domain before you may run into HSTS problems
+### Attempting to visit the site now will automatically redirect to HTTPS and be refused even though HTTP is running
+### Let's Encrypt will not have an issue with this, but you can clear the HSTS from your browser to resolve correctly
 echo -e "${GREEN}Generating Let's Encrypt certificate...${NORM}"
 printf "${YELLOW}Please enter an email address to use for Let's Encrypt certificate: ${NORM}"
 read my_email
-echo -e "${GREEN}Using: ${YELLOW}$my_email"
-sudo letsencrypt certonly --emailaddress $my_email --webroot -w /var/www/$my_domain.cert.temp -d $my_domain -d www.$my_domain
+echo -e "${GREEN}Using: ${YELLOW}$my_email${NORM}"
+sudo letsencrypt certonly --webroot -w /var/www/$my_domain.cert.temp -d $my_domain -d www.$my_domain -m $my_email --agree-tos
+
+### Stop nginx
+### Right before generating dhparam.pem because it takes a long time and we don't want the server left open on HTTP
+echo -e "${GREEN}Stopping nginx...${NORM}"
+sudo service nginx stop
 
 ### Generate dhparam
 echo -e "${GREEN}Generating dhparam.pem...${NORM}"
 sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
-
-### Stop nginx
-echo -e "${GREEN}Stopping nginx...${NORM}"
-sudo service nginx stop
 
 ### Copy site and replace domain in destination, post-SSL
 echo -e "${GREEN}Copying site_example_post_ssl -> /etc/nginx/sites-available/$my_domain${NORM}"
