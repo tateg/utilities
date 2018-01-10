@@ -38,9 +38,9 @@ else
 fi
 
 ### Prompt for name of site
-printf "${GREEN}Please enter domain name for nginx site (ex: domain.com): ${NORM}"
+printf "${YELLOW}Please enter domain name for nginx site (ex: domain.com): ${NORM}"
 read my_domain
-echo -e "${GREEN}Using: $my_domain${NORM}"
+echo -e "${GREEN}Using: ${YELLOW}$my_domain${NORM}"
 
 ### Copy site and replace domain in destination, pre-SSL
 echo -e "${GREEN}Copying site_example_pre_ssl -> /etc/nginx/sites-available/$my_domain${NORM}"
@@ -67,7 +67,7 @@ sudo apt-get -y install letsencrypt
 ### This will generate a temporary webroot that matches the one in the pre_ssl config
 ### This process relies on DNS resolution so your domain must actually point to this nginx server
 echo -e "${GREEN}Generating Let's Encrypt certificate...${NORM}"
-letsencrypt certonly --webroot -w /var/www/$my_domain.cert.temp -d $my_domain -d www.$my_domain
+sudo letsencrypt certonly --webroot -w /var/www/$my_domain.cert.temp -d $my_domain -d www.$my_domain
 
 ### Generate dhparam
 echo -e "${GREEN}Generating dhparam.pem...${NORM}"
