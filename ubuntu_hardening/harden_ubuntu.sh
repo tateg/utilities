@@ -105,7 +105,8 @@ nospoof on' > /etc/host.conf"
 
 ### Install RKHunter and CHKRootKit
 echo -e "${GREEN}Installing RKHunter & CHKRootKit${NORM}"
-sudo apt-get -y install rkhunter chkrootkit
+sudo apt-get -y --no-install-recommends install rkhunter
+sudo apt-get -y install chkrootkit
 
 ### Run CHKRootKit
 echo -e "${GREEN}Running chkrootkit...${NORM}"
