@@ -38,7 +38,7 @@ else
 fi
 
 ### Prompt for name of site
-echo -e "${GREEN}Please enter domain name for nginx site (ex: domain.com): ${NORM}"
+printf "${GREEN}Please enter domain name for nginx site (ex: domain.com): ${NORM}"
 read my_domain
 echo -e "${GREEN}Using: $my_domain${NORM}"
 
@@ -48,7 +48,7 @@ sudo cp -f site_example_pre_ssl /etc/nginx/sites-available/$my_domain
 sudo sed -i -e "s/my_site.com/$my_domain/g" /etc/nginx/sites-available/$my_domain
 
 ### Apply symlink to enable site
-echo -e "${GREEN}Enabling $my_domain with symlink in /etc/nginx/sites-available${NORM}"
+echo -e "${GREEN}Enabling $my_domain with symlink in /etc/nginx/sites-enabled${NORM}"
 sudo ln -s /etc/nginx/sites-available/$my_domain /etc/nginx/sites-enabled/$my_domain
 
 ### Setup temporary webroot directory for cert generation and make index
