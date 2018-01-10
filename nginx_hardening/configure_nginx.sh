@@ -17,6 +17,10 @@ echo -e "${GREEN}Starting nginx configuration script...${NORM}"
 echo -e "${GREEN}Updating and upgrading packages...${NORM}"
 sudo apt-get -y update && sudo apt-get -y upgrade
 
+### Backup nginx.conf
+echo -e "${GREEN}Backing up nginx.conf...${NORM}"
+sudo cp -f /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
+
 ### Copy nginx.conf
 echo -e "${GREEN}Copying nginx.conf -> /etc/nginx/nginx.conf${NORM}"
 sudo cp -f nginx.conf /etc/nginx/nginx.conf
@@ -28,6 +32,10 @@ read my_domain
 ### Copy site, pre-SSL
 echo -e "${GREEN}Copying site_example_pre_ssl -> /etc/nginx/sites-available/$my_domain${NORM}"
 sudo cp -f site_example_pre_ssl /etc/nginx/sites-available/$my_domain
+
+### Apply symlink to enable site
+echo -e "${GREEN}Enabling $my_domain with symlink in /etc/nginx/sites-available${NORM}"
+sudo ln -s /etc/nginx/sites-available/$my_domain /etc/nginx/sites-enabled/$my_domain
 
 ### Install Let's Encrypt
 echo -e "${GREEN}Installing Let's Encrypt${NORM}"
