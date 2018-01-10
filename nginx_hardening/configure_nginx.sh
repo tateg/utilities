@@ -67,7 +67,10 @@ sudo apt-get -y install letsencrypt
 ### This will generate a temporary webroot that matches the one in the pre_ssl config
 ### This process relies on DNS resolution so your domain must actually point to this nginx server
 echo -e "${GREEN}Generating Let's Encrypt certificate...${NORM}"
-sudo letsencrypt certonly --webroot -w /var/www/$my_domain.cert.temp -d $my_domain -d www.$my_domain
+printf "${YELLOW}Please enter an email address to use for Let's Encrypt certificate: ${NORM}"
+read my_email
+echo -e "${GREEN}Using: ${YELLOW}$my_email"
+sudo letsencrypt certonly --emailaddress $my_email --webroot -w /var/www/$my_domain.cert.temp -d $my_domain -d www.$my_domain
 
 ### Generate dhparam
 echo -e "${GREEN}Generating dhparam.pem...${NORM}"
