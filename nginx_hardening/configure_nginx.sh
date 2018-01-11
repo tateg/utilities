@@ -17,6 +17,10 @@ echo -e "${GREEN}Starting nginx configuration script...${NORM}"
 echo -e "${GREEN}Updating and upgrading packages...${NORM}"
 sudo apt-get -y update && sudo apt-get -y upgrade
 
+### If you are using postgres as a db on this node you'll want to install this
+echo -e "${GREEN}Installing postgresql dependencies...${NORM}"
+sudo apt-get -y install libpq-dev
+
 ### Backup nginx.conf
 echo -e "${GREEN}Backing up nginx.conf...${NORM}"
 sudo cp -f /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
