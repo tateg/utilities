@@ -7,6 +7,7 @@ There are a few caveats with this setup:
 - You must already have DNS resolution for your domain setup and pointing towards the server this is being run on
 - Nginx must already be installed correctly using APT (https://www.phusionpassenger.com/library/install/nginx/install/oss/xenial/)
 - You don't have to use Passenger, but the nginx.conf file does enable it for you and expect it to exist
+- If you are running a web app on Rails, etc. you should be supplying a CSP (Content Security Policy) from the app and not nginx. Various gems exist for this like "SecureHeaders".
 
 ## Articles, Guides & References
 - https://letsencrypt.org/
