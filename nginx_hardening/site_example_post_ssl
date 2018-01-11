@@ -38,6 +38,7 @@ server {
   
   # Security headers
   # add_header X-XSS-Protection "1; mode=block"; (this is not needed in nginx config if using header in web app)
+  add_header Referrer-Policy "no-referrer";
   add_header X-Content-Type-Options nosniff;
   add_header X-Frame-Options "SAMEORIGIN";
   add_header Content-Security-Policy "default-src 'self';";
