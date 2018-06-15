@@ -16,31 +16,31 @@ read site_name
 echo -e "${GREEN}Using: ${YELLOW}$site_name${NORM}"
 
 ### remove existing symlink enabling https site
-echo -e "${GREEN}Removing existing site symlink...{NORM}"
+echo -e "${GREEN}Removing existing site symlink...${NORM}"
 sudo rm /etc/nginx/sites-enabled/$site_name
 
 ### apply old http site config to temp webroot
-echo -e "${GREEN}Applying temporary renewal http site config...{NORM}"
+echo -e "${GREEN}Applying temporary renewal http site config...${NORM}"
 sudo ln -s /etc/nginx/sites-available/$site_name.cert.temp /etc/nginx/sites-enabled/$site_name
 
 ### restart nginx
-echo -e "${GREEN}Restarting nginx...{NORM}"
-sudo service restart nginx
+echo -e "${GREEN}Restarting nginx...${NORM}"
+sudo service nginx restart
 
 ### renew existing certificate
-echo -e "${GREEN}Renewing certificate...{NORM}"
+echo -e "${GREEN}Renewing certificate...${NORM}"
 sudo letsencrypt renew
 
 ### remove http symlink
-echo -e "${GREEN}Removing temporary http site symlink...{NORM}"
+echo -e "${GREEN}Removing temporary http site symlink...${NORM}"
 sudo rm /etc/nginx/sites-enabled/$site_name
 
 ### apply production config symlink again
-echo -e "${GREEN}Re-applying production site symlink...{NORM}"
+echo -e "${GREEN}Re-applying production site symlink...${NORM}"
 sudo ln -s /etc/nginx/sites-available/$site_name /etc/nginx/sites-enabled/$site_name
 
 ### restart nginx
-echo -e "${GREEN}Restarting nginx...{NORM}"
-sudo service restart nginx
+echo -e "${GREEN}Restarting nginx...${NORM}"
+sudo service nginx restart
 
-echo -e "${GREEN}Done!{NORM}"
+echo -e "${GREEN}Done!${NORM}"
